@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String   @id @default(uuid())
+  mainAddress     String   @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  wallets         Wallet[]
+  sessions        Session[]
+  exchangeConns   ExchangeConnection[]
+  snapshots       PortfolioSnapshot[]
+  
+  @@index([mainAddress])
+}
+
+model Session {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshToken  String   @unique
+  deviceInfo    String?
+  ipAddress     String?
+  expiresAt     DateTime
+  createdAt     DateTime @default(now())
+  
+  @@index([userId])
+  @@index([refreshToken])
+}
+
+model Wallet {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address     String
+  provider    String   // "metamask" | "walletconnect"
+  chainTypes  String[] // ["ethereum", "polygon", "bsc"]
+  nickname    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  
+  transactions Transaction[]
+  
+  @@unique([userId, address])
+  @@index([userId])
+  @@index([address])
+}
+
+model ExchangeConnection {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exchangeName    String   // "coindcx"
+  apiKeyEncrypted String
+  apiSecretEncrypted String
+  isActive        Boolean  @default(true)
+  lastSyncAt      DateTime?
+  createdAt       DateTime @default(now())
+  
+  @@unique([userId, exchangeName])
+  @@index([userId])
+}
+
+model PortfolioSnapshot {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalValueUsd   Float
+  breakdown       Json     // { wallets: {...}, exchanges: {...}, assets: [...] }
+  generatedAt     DateTime @default(now())
+  
+  @@index([userId, generatedAt])
+}
+
+model PriceCache {
+  id          String   @id @default(uuid())
+  symbol      String   @unique
+  priceUsd    Float
+  updatedAt   DateTime @default(now())
+  
+  @@index([symbol])
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  walletId    String
+  wallet      Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  txHash      String   @unique
+  type        String   // 'receive', 'send', 'swap', 'contract'
+  asset       String   // Token symbol or address
+  amount      Float
+  priceUsd    Float?
+  timestamp   DateTime
+  blockNumber Int?
+  fromAddress String?
+  toAddress   String?
+  chain       String   // 'ethereum', 'polygon', 'bsc'
+  createdAt   DateTime @default(now())
+
+  @@index([walletId, timestamp])
+  @@index([txHash])
+  @@index([timestamp])
+}
+
+model TokenPrice {
+  id          String   @id @default(uuid())
+  tokenId     String   @unique  // coingecko id (e.g., 'bitcoin', 'ethereum')
+  symbol      String
+  name        String
+  priceUsd    Float
+  change24h   Float?
+  marketCap   Float?
+  volume24h   Float?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@index([tokenId])
+  @@index([symbol])
+  @@index([updatedAt])
+}
+

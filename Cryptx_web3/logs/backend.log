@@ -1,0 +1,70 @@
+
+> api@1.0.0 dev
+> nodemon --exec ts-node src/index.ts
+
+[33m[nodemon] 3.1.11[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: ts,json[39m
+[32m[nodemon] starting `ts-node src/index.ts`[39m
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/Users/rohit/Coding/Cryptx_web3/node_modules/express-rate-limit/dist/index.cjs:637:13)
+    at Object.wrappedValidations.<computed> [as keyGeneratorIpFallback] (/Users/rohit/Coding/Cryptx_web3/node_modules/express-rate-limit/dist/index.cjs:680:22)
+    at parseOptions (/Users/rohit/Coding/Cryptx_web3/node_modules/express-rate-limit/dist/index.cjs:750:16)
+    at rateLimit (/Users/rohit/Coding/Cryptx_web3/node_modules/express-rate-limit/dist/index.cjs:831:18)
+    at createPerUserRateLimit (/Users/rohit/Coding/Cryptx_web3/apps/api/src/middleware/rateLimit.ts:116:21)
+    at Object.<anonymous> (/Users/rohit/Coding/Cryptx_web3/apps/api/src/middleware/rateLimit.ts:135:61)
+    at Module._compile (node:internal/modules/cjs/loader:1760:14)
+    at Module.m._compile (/Users/rohit/Coding/Cryptx_web3/apps/api/node_modules/ts-node/src/index.ts:1618:23)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1892:10)
+    at Object.require.extensions.<computed> [as .ts] (/Users/rohit/Coding/Cryptx_web3/apps/api/node_modules/ts-node/src/index.ts:1621:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+ValidationError: Custom keyGenerator appears to use request IP without calling the ipKeyGenerator helper function for IPv6 addresses. This could allow IPv6 users to bypass limits. See https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/ for more information.
+    at Object.keyGeneratorIpFallback (/Users/rohit/Coding/Cryptx_web3/node_modules/express-rate-limit/dist/index.cjs:637:13)
+    at Object.wrappedValidations.<computed> [as keyGeneratorIpFallback] (/Users/rohit/Coding/Cryptx_web3/node_modules/express-rate-limit/dist/index.cjs:680:22)
+    at parseOptions (/Users/rohit/Coding/Cryptx_web3/node_modules/express-rate-limit/dist/index.cjs:750:16)
+    at rateLimit (/Users/rohit/Coding/Cryptx_web3/node_modules/express-rate-limit/dist/index.cjs:831:18)
+    at createPerUserRateLimit (/Users/rohit/Coding/Cryptx_web3/apps/api/src/middleware/rateLimit.ts:116:21)
+    at Object.<anonymous> (/Users/rohit/Coding/Cryptx_web3/apps/api/src/middleware/rateLimit.ts:136:58)
+    at Module._compile (node:internal/modules/cjs/loader:1760:14)
+    at Module.m._compile (/Users/rohit/Coding/Cryptx_web3/apps/api/node_modules/ts-node/src/index.ts:1618:23)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1892:10)
+    at Object.require.extensions.<computed> [as .ts] (/Users/rohit/Coding/Cryptx_web3/apps/api/node_modules/ts-node/src/index.ts:1621:12) {
+  code: 'ERR_ERL_KEY_GEN_IPV6',
+  help: 'https://express-rate-limit.github.io/ERR_ERL_KEY_GEN_IPV6/'
+}
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+❌ Redis error: AggregateError
+    at internalConnectMultiple (node:net:1134:18)
+    at afterConnectMultiple (node:net:1715:7) {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:6379
+        at createConnectionError (node:net:1678:14)
+        at afterConnectMultiple (node:net:1708:16) {
+      errno: -61,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 6379
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:6379
+        at createConnectionError (node:net:1678:14)
+        at afterConnectMultiple (node:net:1708:16) {
+      errno: -61,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 6379
+    }
+  ]
+}
+❌ Failed to start server: Error: Connection is closed.
+    at EventEmitter.connectionCloseHandler (/Users/rohit/Coding/Cryptx_web3/node_modules/ioredis/built/Redis.js:208:28)
+    at Object.onceWrapper (node:events:623:26)
+    at EventEmitter.emit (node:events:508:28)
+    at EventEmitter.emit (node:domain:489:12)
+    at processTicksAndRejections (node:internal/process/task_queues:84:11)
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m

@@ -1,0 +1,411 @@
+
+> web@0.1.0 dev
+> next dev
+
+▲ Next.js 16.1.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.159:3000
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 1254ms
+⨯ ./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-client] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+
+./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-ssr] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+Error [ModuleBuildError]: ./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-client] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+
+./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-ssr] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+    at <unknown> (ModuleBuildError: ./apps/web/lib/web3/walletconnect.ts:2:1)
+    at <unknown> (./apps/web/lib/web3/walletconnect.ts:2:1)
+Error: Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:
+  - react:      18.3.1
+  - react-dom:  19.2.3
+Learn more: https://react.dev/warnings/version-mismatch
+    at ignore-listed frames
+⨯ ./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-client] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+
+./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-ssr] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+Error [ModuleBuildError]: ./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-client] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+
+./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-ssr] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+    at <unknown> (ModuleBuildError: ./apps/web/lib/web3/walletconnect.ts:2:1)
+    at <unknown> (./apps/web/lib/web3/walletconnect.ts:2:1)
+Error: Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:
+  - react:      18.3.1
+  - react-dom:  19.2.3
+Learn more: https://react.dev/warnings/version-mismatch
+    at ignore-listed frames
+⨯ ./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-client] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+
+./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-ssr] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+Error [ModuleBuildError]: ./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-client] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+
+./apps/web/lib/web3/walletconnect.ts:2:1
+Export Modal doesn't exist in target module
+[0m [90m 1 |[39m [36mimport[39m { [33mSignClient[39m } [36mfrom[39m [32m'@walletconnect/sign-client'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 2 |[39m [36mimport[39m { [33mModal[39m } [36mfrom[39m [32m'@walletconnect/modal'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 3 |[39m [36mimport[39m { ethers } [36mfrom[39m [32m'ethers'[39m[33m;[39m
+ [90m 4 |[39m
+ [90m 5 |[39m [36mexport[39m [36minterface[39m [33mWalletConnectConnection[39m {[0m
+
+The export Modal was not found in module [project]/node_modules/@walletconnect/modal/dist/index.js [app-ssr] (ecmascript).
+Did you mean to import WalletConnectModal?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component Browser]
+    ./apps/web/lib/web3/wallet.ts [Client Component Browser]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component Browser]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/web/lib/web3/walletconnect.ts [Client Component SSR]
+    ./apps/web/lib/web3/wallet.ts [Client Component SSR]
+    ./apps/web/hooks/useWalletConnect.ts [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Client Component SSR]
+    ./apps/web/components/home/FeatureGrid.tsx [Server Component]
+    ./apps/web/app/page.tsx [Server Component]
+
+
+    at <unknown> (ModuleBuildError: ./apps/web/lib/web3/walletconnect.ts:2:1)
+    at <unknown> (./apps/web/lib/web3/walletconnect.ts:2:1)
+Error: Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:
+  - react:      18.3.1
+  - react-dom:  19.2.3
+Learn more: https://react.dev/warnings/version-mismatch
+    at ignore-listed frames
+[?25h
