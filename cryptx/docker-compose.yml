@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6
+    container_name: crypto-tracker-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: crypto-tracker
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - crypto-tracker-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: crypto-tracker-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - crypto-tracker-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: crypto-tracker-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongodb:27017/crypto-tracker
+      - REDIS_URI=redis://redis:6379
+      - AI_SERVICE_URL=http://ai-service:8000
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - crypto-tracker-network
+    command: npm run dev
+
+  # AI Service
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: crypto-tracker-ai
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    volumes:
+      - ./ai-service:/app
+      - /app/venv
+    networks:
+      - crypto-tracker-network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend (for production build)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: crypto-tracker-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_API_URL=http://localhost:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - crypto-tracker-network
+    command: npm run dev
+
+volumes:
+  mongodb_data:
+  redis_data:
+
+networks:
+  crypto-tracker-network:
+    driver: bridge

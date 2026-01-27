@@ -9,7 +9,8 @@ interface AssetAllocation {
     percentage: number;
 }
 
-const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444'];
+// Neutral grayscale colors for Swiss design
+const COLORS = ['#1A1A1A', '#424242', '#666666', '#8E8E8E', '#B0B0B0', '#D4D4D4', '#E8E8E8'];
 
 interface CustomTooltipProps {
     active?: boolean;
@@ -20,13 +21,13 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
         const data = payload[0].payload;
         return (
-            <div className="glass p-3 rounded-xl border border-white/20">
-                <p className="text-white font-bold text-sm">{data.symbol}</p>
-                <p className="text-xs text-gray-400">{data.name}</p>
-                <p className="text-white font-medium mt-1">
+            <div className="bg-surface-elevated border border-border p-3 rounded-[2px]">
+                <p className="text-text-primary font-semibold text-sm">{data.symbol}</p>
+                <p className="text-xs text-text-secondary">{data.name}</p>
+                <p className="text-text-primary font-medium mt-1">
                     ${data.value.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </p>
-                <p className="text-xs text-gray-300">
+                <p className="text-xs text-text-secondary">
                     {data.percentage.toFixed(2)}%
                 </p>
             </div>
@@ -38,7 +39,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 export function AssetAllocationPie({ data }: { data: AssetAllocation[] }) {
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] flex items-center justify-center text-gray-500">
+            <div className="h-[300px] flex items-center justify-center text-text-secondary">
                 <p>No assets to display</p>
             </div>
         );
@@ -56,13 +57,12 @@ export function AssetAllocationPie({ data }: { data: AssetAllocation[] }) {
                     paddingAngle={2}
                     dataKey="value"
                     label={({ symbol, percentage }) => `${symbol} ${percentage.toFixed(1)}%`}
-                    labelLine={{ stroke: '#9ca3af', strokeWidth: 1 }}
+                    labelLine={{ stroke: 'var(--text-secondary)', strokeWidth: 1 }}
                 >
                     {data.map((entry, index) => (
                         <Cell
                             key={`cell-${index}`}
                             fill={COLORS[index % COLORS.length]}
-                            className="hover:opacity-80 transition-opacity cursor-pointer"
                         />
                     ))}
                 </Pie>
@@ -71,7 +71,7 @@ export function AssetAllocationPie({ data }: { data: AssetAllocation[] }) {
                     verticalAlign="bottom"
                     height={36}
                     formatter={(value, entry: any) => (
-                        <span className="text-gray-300 text-xs">{entry.payload.symbol}</span>
+                        <span className="text-text-secondary text-xs">{entry.payload.symbol}</span>
                     )}
                 />
             </PieChart>

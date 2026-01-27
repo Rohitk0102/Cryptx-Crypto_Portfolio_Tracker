@@ -1,0 +1,4 @@
+# Models directory
+# Place trained ML models here:
+# - lstm_price_forecast.h5
+# - mpt_optimizer.pkl

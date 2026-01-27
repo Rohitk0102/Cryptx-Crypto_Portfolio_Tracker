@@ -17,11 +17,11 @@ interface CustomTooltipProps {
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
         return (
-            <div className="glass p-3 rounded-xl border border-white/20">
-                <p className="text-xs text-gray-400 mb-1">
+            <div className="bg-surface-elevated border border-border p-3 rounded-[2px]">
+                <p className="text-xs text-text-secondary mb-1">
                     {label && format(new Date(label), 'MMM dd, yyyy')}
                 </p>
-                <p className="text-white font-bold">
+                <p className="text-text-primary font-semibold">
                     ${payload[0].value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
             </div>
@@ -33,8 +33,8 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 export function PortfolioValueChart({ data }: { data: HistoricalValue[] }) {
     if (!data || data.length === 0) {
         return (
-            <div className="h-[300px] flex items-center justify-center text-gray-500">
-                <p>No historical data available yet</p>
+            <div className="h-[300px] flex items-center justify-center text-text-secondary">
+                <p>No historical data available</p>
             </div>
         );
     }
@@ -42,15 +42,15 @@ export function PortfolioValueChart({ data }: { data: HistoricalValue[] }) {
     return (
         <ResponsiveContainer width="100%" height={300}>
             <LineChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis
                     dataKey="date"
-                    stroke="#9ca3af"
+                    stroke="var(--text-secondary)"
                     fontSize={12}
                     tickFormatter={(value) => format(new Date(value), 'MMM dd')}
                 />
                 <YAxis
-                    stroke="#9ca3af"
+                    stroke="var(--text-secondary)"
                     fontSize={12}
                     tickFormatter={(value) => `$${(value / 1000).toFixed(0)}K`}
                 />
@@ -58,10 +58,10 @@ export function PortfolioValueChart({ data }: { data: HistoricalValue[] }) {
                 <Line
                     type="monotone"
                     dataKey="value"
-                    stroke="#6366f1"
-                    strokeWidth={3}
+                    stroke="var(--accent)"
+                    strokeWidth={2}
                     dot={false}
-                    activeDot={{ r: 6, fill: "#6366f1" }}
+                    activeDot={{ r: 4, fill: "var(--accent)" }}
                 />
             </LineChart>
         </ResponsiveContainer>

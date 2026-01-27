@@ -12,9 +12,8 @@ export default function FeatureGrid() {
 
     const features = [
         {
-            icon: "📊",
-            title: "My Portfolio",
-            desc: "View your wallet balances & assets",
+            title: "Portfolio",
+            desc: "View wallet balances and assets across multiple chains",
             action: () => {
                 if (isAuthenticated) {
                     router.push('/dashboard?tab=portfolio');
@@ -24,9 +23,8 @@ export default function FeatureGrid() {
             }
         },
         {
-            icon: "🔴",
-            title: "Live Token Tracking",
-            desc: "Real-time prices & market data",
+            title: "Live Tracking",
+            desc: "Real-time token prices and market data",
             action: () => {
                 if (isAuthenticated) {
                     router.push('/dashboard?tab=tracking');
@@ -38,21 +36,18 @@ export default function FeatureGrid() {
     ];
 
     return (
-        <div className="grid md:grid-cols-2 gap-6 mt-16 w-full max-w-4xl mx-auto px-4 z-10 relative">
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {features.map((feature, idx) => (
                 <Card
                     key={idx}
                     hover={true}
                     onClick={feature.action}
-                    className="flex flex-col items-start text-left h-full cursor-pointer"
+                    className="p-8"
                 >
-                    <div className="text-4xl mb-6 p-3 bg-white/5 rounded-2xl w-fit backdrop-blur-md border border-white/10 group-hover:scale-110 group-hover:bg-primary/20 group-hover:border-primary/30 transition-all duration-300">
-                        {feature.icon}
-                    </div>
-                    <CardTitle className="group-hover:text-primary-foreground transition-colors">
+                    <CardTitle className="mb-3">
                         {feature.title}
                     </CardTitle>
-                    <CardDescription className="group-hover:text-gray-300 transition-colors">
+                    <CardDescription>
                         {feature.desc}
                     </CardDescription>
                 </Card>

@@ -1,0 +1,24 @@
+# Web Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.0
+
+# Machine Learning
+tensorflow==2.18.0
+keras==3.7.0
+scikit-learn==1.5.2
+numpy==1.26.4
+pandas==2.2.3
+
+# Portfolio Optimization
+PyPortfolioOpt==1.5.5
+
+# HTTP Client
+httpx==0.27.2
+requests==2.32.3
+
+# Environment Variables
+python-dotenv==1.0.1
+
+# Logging
+python-json-logger==2.0.7

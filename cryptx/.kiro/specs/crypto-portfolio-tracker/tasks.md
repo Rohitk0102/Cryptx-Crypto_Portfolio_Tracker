@@ -1,0 +1,406 @@
+# Implementation Plan
+
+- [x] 1. Project setup and configuration
+  - Initialize React + TypeScript project with Vite
+  - Configure Tailwind CSS and shadcn/ui
+  - Set up ESLint and TypeScript configurations
+  - Configure PWA with service worker
+  - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+
+- [x] 2. Wagmi wallet integration
+  - [x] 2.1 Configure Wagmi providers and chains
+    - Set up WagmiConfig with Ethereum, Polygon, and BSC
+    - Configure MetaMask and WalletConnect connectors
+    - Set up Alchemy/Infura RPC providers
+    - _Requirements: 1.1, 2.1, 2.2, 2.3_
+  - [x] 2.2 Implement WalletConnect component
+    - Create wallet connection UI with MetaMask and WalletConnect options
+    - Implement connection flow with loading states
+    - Add connected wallet address display with ENS resolution
+    - Implement connection persistence using localStorage
+    - _Requirements: 1.1, 1.2, 1.3, 1.5_
+  - [x] 2.3 Implement wallet disconnection
+    - Add disconnect button to UI
+    - Clear connection state and portfolio data on disconnect
+    - Remove persisted connection from localStorage
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
+  - [x] 2.4 Handle wallet connection errors
+    - Display error messages for connection failures
+    - Handle user rejection of connection
+    - Implement retry mechanism for failed connections
+    - _Requirements: 1.4, 8.2_
+
+- [x] 3. Backend API setup (Node.js/Express)
+  - [x] 3.1 Initialize Express server with TypeScript
+    - Set up Express application with middleware
+    - Configure CORS for frontend origin
+    - Add rate limiting middleware
+    - Set up request validation with Zod
+    - _Requirements: 8.1, 8.3_
+  - [x] 3.2 Configure MongoDB connection
+    - Set up Mongoose connection with MongoDB Atlas
+    - Create database schemas for user preferences, portfolio history, AI cache, and price history
+    - Implement connection error handling
+    - _Requirements: 13.3, 13.4_
+  - [x] 3.3 Configure Redis for caching
+    - Set up Redis client connection
+    - Implement cache helper functions for get/set/delete
+    - Configure TTL for different cache types
+    - _Requirements: 5.5_
+  - [x] 3.4 Implement authentication middleware
+    - Create JWT token generation and validation
+    - Add authentication middleware for protected routes
+    - Implement wallet signature verification
+    - _Requirements: 13.1, 13.2_
+
+- [x] 4. Portfolio service implementation
+  - [x] 4.1 Create blockchain data fetching service
+    - Implement token balance fetching for multiple chains
+    - Fetch token metadata (name, symbol, decimals, logo)
+    - Implement multi-chain balance aggregation
+    - _Requirements: 2.4, 3.1, 3.2_
+  - [x] 4.2 Implement price fetching service
+    - Integrate CoinGecko API for token prices
+    - Implement price caching with 30-second TTL
+    - Fetch 24-hour price change data
+    - Handle API rate limits and errors
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
+  - [x] 4.3 Create portfolio calculation logic
+    - Calculate total portfolio value in USD
+    - Compute token allocation percentages
+    - Aggregate balances across multiple chains
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [x] 4.4 Implement portfolio API endpoints
+    - Create GET /api/portfolio/:address endpoint
+    - Create GET /api/portfolio/:address/history endpoint
+    - Add chain switching support
+    - Implement real-time updates with polling
+    - _Requirements: 2.5, 3.4, 3.5_
+
+- [x] 5. Transaction history implementation
+  - [x] 5.1 Create transaction fetching service
+    - Fetch transaction history from blockchain using Alchemy/Infura
+    - Parse transaction data (hash, from, to, value, timestamp)
+    - Determine transaction status and token information
+    - _Requirements: 4.1, 4.2, 4.3_
+  - [x] 5.2 Implement transaction API endpoints
+    - Create GET /api/transactions/:address endpoint with pagination
+    - Add filtering by transaction type
+    - Add search by transaction hash
+    - _Requirements: 4.4_
+  - [x] 5.3 Create TransactionHistory component
+    - Display paginated transaction list
+    - Show transaction details (amount, token, time, status)
+    - Add links to block explorer
+    - Implement loading states
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 9.2_
+
+- [x] 6. Portfolio dashboard UI
+  - [x] 6.1 Create PortfolioDashboard component
+    - Display total portfolio value with USD formatting
+    - Show token list with balances and USD values
+    - Display allocation percentages
+    - Add 24-hour price change indicators
+    - _Requirements: 3.1, 3.2, 3.3, 3.5_
+  - [x] 6.2 Implement portfolio visualization
+    - Create pie/donut chart for asset allocation using Recharts
+    - Add interactive tooltips with token details
+    - Implement responsive chart sizing
+    - _Requirements: 3.2, 7.1, 7.2, 7.3, 7.4_
+  - [x] 6.3 Add real-time updates
+    - Implement 60-second polling for price updates
+    - Update portfolio values without full page reload
+    - Display last updated timestamp
+    - _Requirements: 3.4, 5.2_
+  - [x] 6.4 Implement chain switching UI
+    - Add chain selector dropdown
+    - Update portfolio data when chain changes
+    - Display loading state during chain switch
+    - _Requirements: 2.5, 9.1_
+
+- [x] 7. Python AI service setup
+  - [x] 7.1 Initialize FastAPI application
+    - Set up FastAPI with CORS middleware
+    - Configure request/response models with Pydantic
+    - Add error handling middleware
+    - Set up logging configuration
+    - _Requirements: 10.1, 11.1, 12.1_
+  - [x] 7.2 Implement data fetching utilities
+    - Create historical price data fetcher from CoinGecko
+    - Implement data preprocessing functions (normalization, windowing)
+    - Add data validation and error handling
+    - _Requirements: 11.4_
+  - [x] 7.3 Set up model storage and loading
+    - Create model directory structure
+    - Implement model loading functions for LSTM and MPT
+    - Add model versioning support
+    - _Requirements: 10.5, 11.5_
+
+- [ ] 8. LSTM price forecasting implementation
+  - [ ] 8.1 Create LSTM model training script
+    - Implement data preparation pipeline
+    - Build LSTM neural network architecture with TensorFlow/Keras
+    - Train model on historical price data
+    - Save trained model to disk
+    - _Requirements: 11.1, 11.2_
+  - [ ] 8.2 Implement price forecasting service
+    - Create LSTMPriceForecastService class
+    - Implement forecast_price method for 7-day and 30-day predictions
+    - Calculate prediction confidence intervals
+    - Determine trend direction (bullish/bearish/neutral)
+    - _Requirements: 11.1, 11.2, 11.3_
+  - [ ] 8.3 Create forecast API endpoint
+    - Implement POST /api/ai/forecast-prices endpoint
+    - Add input validation for token symbols
+    - Implement response caching in MongoDB
+    - Handle model prediction errors
+    - _Requirements: 11.1, 11.2, 11.3, 11.4_
+
+- [ ] 9. MPT portfolio optimization implementation
+  - [ ] 9.1 Implement MPT optimization service
+    - Create MPTOptimizationService class using PyPortfolioOpt
+    - Calculate expected returns from historical data
+    - Compute covariance matrix for risk assessment
+    - Run efficient frontier optimization
+    - _Requirements: 10.1, 10.2_
+  - [ ] 9.2 Create diversification analysis logic
+    - Generate recommended asset allocation
+    - Identify overconcentrated positions (>30% allocation)
+    - Calculate Sharpe ratio and risk metrics
+    - Generate actionable recommendations
+    - _Requirements: 10.2, 10.3, 10.4_
+  - [ ] 9.3 Create diversification API endpoint
+    - Implement POST /api/ai/analyze-diversification endpoint
+    - Add portfolio data validation
+    - Cache analysis results in MongoDB
+    - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5_
+
+- [ ] 10. Risk analysis implementation
+  - [ ] 10.1 Create risk analysis service
+    - Implement RiskAnalysisService class
+    - Calculate portfolio volatility from historical data
+    - Compute concentration risk using Herfindahl index
+    - Assess liquidity risk based on trading volumes
+    - Calculate Value at Risk (VaR)
+    - _Requirements: 12.1, 12.2, 12.3_
+  - [ ] 10.2 Generate risk score and recommendations
+    - Compute overall risk score (0-100 scale)
+    - Identify high-risk assets based on volatility
+    - Generate risk mitigation recommendations
+    - _Requirements: 12.1, 12.2, 12.4_
+  - [ ] 10.3 Create risk analysis API endpoint
+    - Implement POST /api/ai/analyze-risk endpoint
+    - Add portfolio data validation
+    - Cache risk analysis in MongoDB
+    - Update risk metrics on portfolio changes
+    - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
+
+- [ ] 11. AI analysis dashboard UI
+  - [ ] 11.1 Create AIAnalysisDashboard component
+    - Display diversification recommendations with current vs recommended allocation
+    - Show price forecasts with confidence levels and trends
+    - Display risk analysis with overall score and breakdown
+    - Add visual indicators for high-risk assets
+    - _Requirements: 10.2, 10.3, 11.1, 11.2, 11.3, 12.1, 12.2, 12.3_
+  - [ ] 11.2 Implement forecast visualization
+    - Create line charts for price predictions using Recharts
+    - Display confidence intervals as shaded areas
+    - Add trend indicators (bullish/bearish/neutral)
+    - Show historical accuracy metrics
+    - _Requirements: 11.1, 11.2, 11.3, 11.5_
+  - [ ] 11.3 Create risk visualization
+    - Display risk score gauge/meter
+    - Show risk factor breakdown (concentration, volatility, liquidity)
+    - Highlight high-risk assets with warnings
+    - Display actionable recommendations
+    - _Requirements: 12.1, 12.2, 12.3, 12.4_
+  - [ ] 11.4 Add AI analysis loading states
+    - Display loading spinners during AI analysis
+    - Show skeleton screens for AI components
+    - Add timeout handling for long-running analyses
+    - _Requirements: 9.3, 9.5_
+
+- [ ] 12. Backend-AI service integration
+  - [ ] 12.1 Create AI service client in backend
+    - Implement HTTP client for Python AI service
+    - Add retry logic with exponential backoff
+    - Handle AI service timeouts and errors
+    - _Requirements: 8.1, 8.3_
+  - [ ] 12.2 Implement AI analysis endpoints in backend
+    - Create POST /api/ai/analyze-diversification proxy endpoint
+    - Create POST /api/ai/forecast-prices proxy endpoint
+    - Create POST /api/ai/analyze-risk proxy endpoint
+    - Add request validation and error handling
+    - _Requirements: 10.1, 11.1, 12.1_
+  - [ ] 12.3 Implement AI response caching
+    - Cache AI analysis results in MongoDB with 24-hour TTL
+    - Use Redis for short-term caching (5 minutes)
+    - Implement cache invalidation on portfolio changes
+    - _Requirements: 10.5, 11.4_
+
+- [ ] 13. State management and data flow
+  - [ ] 13.1 Create Zustand store for portfolio state
+    - Define portfolio state interface
+    - Implement actions for wallet connection, portfolio updates, AI analysis
+    - Add loading and error state management
+    - _Requirements: 3.4, 3.5, 9.1, 9.2, 9.3_
+  - [ ] 13.2 Implement API client service
+    - Create axios-based API client with interceptors
+    - Add authentication token handling
+    - Implement error handling and retry logic
+    - _Requirements: 8.1, 8.3_
+  - [ ] 13.3 Connect components to state
+    - Wire WalletConnect component to store
+    - Connect PortfolioDashboard to portfolio state
+    - Connect AIAnalysisDashboard to AI analysis state
+    - Connect TransactionHistory to transaction state
+    - _Requirements: 3.4, 3.5_
+
+- [ ] 14. Error handling and loading states
+  - [ ] 14.1 Implement error boundary component
+    - Create React error boundary for component errors
+    - Display user-friendly error messages
+    - Add error reporting to Sentry
+    - _Requirements: 8.1_
+  - [ ] 14.2 Add error handling for wallet operations
+    - Handle wallet connection rejection
+    - Display errors for unsupported chains
+    - Show network error messages with retry
+    - _Requirements: 8.2, 8.4_
+  - [ ] 14.3 Implement loading states across app
+    - Add loading spinners for wallet connection
+    - Show skeleton screens for portfolio data
+    - Display loading indicators for transactions
+    - Add loading states for AI analysis
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
+  - [ ] 14.4 Add timeout handling
+    - Implement 10-second timeout for data fetching
+    - Display timeout messages with retry option
+    - Handle AI service timeouts gracefully
+    - _Requirements: 9.5_
+
+- [ ] 15. Responsive design implementation
+  - [ ] 15.1 Implement mobile-first layout
+    - Create responsive grid layouts with Tailwind
+    - Implement mobile navigation menu
+    - Optimize touch interactions for mobile
+    - _Requirements: 7.3, 7.5_
+  - [ ] 15.2 Optimize tablet layout
+    - Adjust component sizing for tablet screens
+    - Optimize chart displays for medium screens
+    - Test layout on iPad and Android tablets
+    - _Requirements: 7.2, 7.5_
+  - [ ] 15.3 Optimize desktop layout
+    - Create multi-column layouts for large screens
+    - Optimize dashboard for wide displays
+    - Ensure proper spacing and readability
+    - _Requirements: 7.1, 7.5_
+  - [ ] 15.4 Test responsive transitions
+    - Verify smooth layout transitions on resize
+    - Test all breakpoints (320px, 768px, 1024px, 1440px)
+    - Ensure functionality across all screen sizes
+    - _Requirements: 7.4, 7.5_
+
+- [ ] 16. PWA configuration
+  - [ ] 16.1 Configure service worker
+    - Set up Vite PWA plugin
+    - Configure caching strategies for assets
+    - Implement offline fallback page
+    - _Requirements: 7.5_
+  - [ ] 16.2 Add PWA manifest
+    - Create web app manifest with icons
+    - Configure app name, theme color, and display mode
+    - Add install prompt handling
+    - _Requirements: 7.5_
+  - [ ] 16.3 Implement offline functionality
+    - Cache critical API responses
+    - Display offline indicator
+    - Queue actions for when connection returns
+    - _Requirements: 13.3, 13.4_
+
+- [ ] 17. Security implementation
+  - [ ] 17.1 Implement client-side data encryption
+    - Encrypt cached portfolio data in localStorage
+    - Implement secure key management
+    - Add data clearing functionality
+    - _Requirements: 13.3, 13.4_
+  - [ ] 17.2 Add input validation and sanitization
+    - Validate all user inputs on frontend
+    - Sanitize displayed blockchain data
+    - Implement XSS prevention measures
+    - _Requirements: 8.1_
+  - [ ] 17.3 Configure security headers
+    - Implement Content Security Policy
+    - Add HTTPS enforcement
+    - Configure CORS properly
+    - _Requirements: 13.1, 13.2_
+  - [ ] 17.4 Add rate limiting
+    - Implement frontend rate limiting for API calls
+    - Add backend rate limiting middleware
+    - Display rate limit warnings to users
+    - _Requirements: 8.1_
+
+- [ ] 18. Deployment and DevOps
+  - [ ] 18.1 Create Docker configurations
+    - Write Dockerfile for backend service
+    - Write Dockerfile for AI service
+    - Create docker-compose for local development
+    - _Requirements: All_
+  - [ ] 18.2 Set up CI/CD pipelines
+    - Configure GitHub Actions for frontend deployment
+    - Set up backend deployment pipeline
+    - Configure AI service deployment pipeline
+    - _Requirements: All_
+  - [ ] 18.3 Deploy to staging environment
+    - Deploy frontend to Vercel/Netlify
+    - Deploy backend to Railway/Render
+    - Deploy AI service to Railway/Render
+    - Configure MongoDB Atlas and Redis Cloud
+    - _Requirements: All_
+  - [ ] 18.4 Configure monitoring and logging
+    - Set up Sentry for error tracking
+    - Configure logging for backend and AI services
+    - Set up uptime monitoring
+    - _Requirements: 8.5_
+
+- [ ] 19. Integration and end-to-end testing
+  - [ ] 19.1 Create integration tests for backend
+    - Test portfolio API endpoints
+    - Test transaction API endpoints
+    - Test AI analysis endpoints
+    - Test authentication flow
+    - _Requirements: All_
+  - [ ] 19.2 Create E2E tests for critical flows
+    - Test wallet connection flow
+    - Test portfolio viewing flow
+    - Test AI analysis flow
+    - Test chain switching
+    - _Requirements: All_
+  - [ ] 19.3 Test cross-browser compatibility
+    - Test on Chrome, Firefox, Safari
+    - Verify wallet connections work on all browsers
+    - Test responsive design on different devices
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+
+- [ ] 20. Documentation and final polish
+  - [ ] 20.1 Create user documentation
+    - Write README with setup instructions
+    - Document environment variables
+    - Create user guide for wallet connection
+    - _Requirements: All_
+  - [ ] 20.2 Create API documentation
+    - Document all backend API endpoints with Swagger
+    - Document AI service endpoints
+    - Add example requests and responses
+    - _Requirements: All_
+  - [ ] 20.3 Add transparency notice
+    - Create data handling transparency page
+    - Explain decentralized data management
+    - Document privacy practices
+    - _Requirements: 13.5_
+  - [ ] 20.4 Performance optimization
+    - Optimize bundle size (target <200KB gzipped)
+    - Implement code splitting for routes
+    - Optimize images and assets
+    - Verify performance targets are met
+    - _Requirements: All_
