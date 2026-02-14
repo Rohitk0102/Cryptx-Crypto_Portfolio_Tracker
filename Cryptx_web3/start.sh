@@ -93,15 +93,25 @@ check_prerequisites() {
     
     # Check for required environment files
     if [ ! -f "$API_DIR/.env" ]; then
-        print_error "Backend .env file not found at $API_DIR/.env"
-        print_status "Please copy .env.example to .env and configure your environment variables"
-        exit 1
+        print_warning "Backend .env file not found. Creating from example..."
+        if [ -f "$API_DIR/.env.example" ]; then
+            cp "$API_DIR/.env.example" "$API_DIR/.env"
+            print_success "Created backend .env file"
+        else
+            print_error "Backend .env.example not found!"
+            exit 1
+        fi
     fi
     
     if [ ! -f "$WEB_DIR/.env.local" ]; then
-        print_error "Frontend .env.local file not found at $WEB_DIR/.env.local"
-        print_status "Please copy .env.example to .env.local and configure your environment variables"
-        exit 1
+        print_warning "Frontend .env.local file not found. Creating from example..."
+        if [ -f "$WEB_DIR/.env.example" ]; then
+            cp "$WEB_DIR/.env.example" "$WEB_DIR/.env.local"
+            print_success "Created frontend .env.local file"
+        else
+            print_error "Frontend .env.example not found!"
+            exit 1
+        fi
     fi
     
     print_success "All prerequisites checked!"
