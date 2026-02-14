@@ -8,7 +8,32 @@ class RedisClient {
 
   constructor() {
     const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-    
+
+    // Don't create the client if Redis is disabled
+    if (process.env.DISABLE_REDIS === 'true') {
+      console.log('⚠️  Redis disabled via DISABLE_REDIS env var');
+      // Create a minimal mock client to prevent null errors
+      this.client = {
+        connect: async () => { },
+        quit: async () => { },
+        disconnect: () => { },
+        ping: async () => 'PONG',
+        get: async () => null,
+        set: async () => null,
+        setex: async () => null,
+        del: async () => 0,
+        exists: async () => 0,
+        expire: async () => 0,
+        ttl: async () => -2,
+        keys: async () => [],
+        flushdb: async () => null,
+        on: () => { },
+        status: 'end'
+      } as any;
+      this.isConnected = false;
+      return;
+    }
+
     this.client = new Redis(redisUrl, {
       maxRetriesPerRequest: 3,
       lazyConnect: true,
@@ -47,13 +72,18 @@ class RedisClient {
     });
 
     this.client.on('error', (err) => {
-      console.error('❌ Redis error:', err.message);
+      // Silently handle errors - don't crash the app
       this.isConnected = false;
+      // Only log if it's not a connection refused error (too noisy)
+      if (!err.message.includes('ECONNREFUSED')) {
+        console.error('❌ Redis error:', err.message);
+      }
     });
 
     this.client.on('close', () => {
       console.log('🔌 Redis: Connection closed');
       this.isConnected = false;
+      // Don't throw or crash
     });
 
     this.client.on('reconnecting', () => {
@@ -64,16 +94,23 @@ class RedisClient {
     this.client.on('end', () => {
       console.log('🛑 Redis: Connection ended');
       this.isConnected = false;
+      // Don't throw or crash
     });
   }
 
   async connect(): Promise<void> {
+    // If Redis is disabled, skip connection
+    if (process.env.DISABLE_REDIS === 'true') {
+      return;
+    }
+
     try {
       await this.client.connect();
       console.log('✅ Redis: Initial connection successful');
-    } catch (error) {
-      console.error('❌ Redis: Failed to connect:', error);
-      throw error;
+    } catch (error: any) {
+      // Silently fail - don't log full error to avoid noise
+      this.isConnected = false;
+      // Don't throw - allow the app to continue without Redis
     }
   }
 
@@ -89,11 +126,19 @@ class RedisClient {
   }
 
   async healthCheck(): Promise<boolean> {
+    // Add timeout to prevent hanging if Redis is unresponsive
+    const timeoutPromise = new Promise<boolean>((_, reject) => {
+      setTimeout(() => reject(new Error('Redis health check timeout')), 2000);
+    });
+    
     try {
-      const result = await this.client.ping();
-      return result === 'PONG';
+      const pingPromise = this.client.ping().then(result => result === 'PONG');
+      return await Promise.race([pingPromise, timeoutPromise]);
     } catch (error) {
-      console.error('❌ Redis health check failed:', error);
+      // Don't log timeout errors as they're expected when Redis is unavailable
+      if (error instanceof Error && !error.message.includes('timeout')) {
+        console.error('❌ Redis health check failed:', error);
+      }
       return false;
     }
   }

@@ -55,7 +55,7 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
         const getY = (price: number) => padding.top + chartHeight - ((price - minPrice) / priceRange) * chartHeight;
 
         // Draw grid lines
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.strokeStyle = '#D1D1D1'; // --border color
         ctx.lineWidth = 1;
         for (let i = 0; i <= 4; i++) {
             const y = padding.top + (i / 4) * chartHeight;
@@ -66,21 +66,14 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
 
             // Price labels
             const price = maxPrice - (i / 4) * priceRange;
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+            ctx.fillStyle = '#4A4A4A'; // --text-secondary color
             ctx.font = '12px monospace';
             ctx.textAlign = 'right';
             ctx.fillText(`$${price.toFixed(2)}`, padding.left - 10, y + 4);
         }
 
-        // Draw gradient area
-        const gradient = ctx.createLinearGradient(0, padding.top, 0, dimensions.height - padding.bottom);
-        if (isPositive) {
-            gradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
-            gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
-        } else {
-            gradient.addColorStop(0, 'rgba(239, 68, 68, 0.3)');
-            gradient.addColorStop(1, 'rgba(239, 68, 68, 0)');
-        }
+        // Draw area fill with neutral opacity
+        const fillColor = isPositive ? 'rgba(46, 125, 50, 0.1)' : 'rgba(220, 20, 60, 0.1)'; // success/error with opacity
 
         ctx.beginPath();
         ctx.moveTo(getX(0), dimensions.height - padding.bottom);
@@ -89,7 +82,7 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
         });
         ctx.lineTo(getX(data.length - 1), dimensions.height - padding.bottom);
         ctx.closePath();
-        ctx.fillStyle = gradient;
+        ctx.fillStyle = fillColor;
         ctx.fill();
 
         // Draw line
@@ -98,7 +91,7 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
         data.forEach((point, index) => {
             ctx.lineTo(getX(index), getY(point[1]));
         });
-        ctx.strokeStyle = isPositive ? '#10b981' : '#ef4444';
+        ctx.strokeStyle = isPositive ? '#2E7D32' : '#DC143C'; // --semantic-success / --semantic-error
         ctx.lineWidth = 2;
         ctx.stroke();
 
@@ -106,9 +99,9 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
         if (hoveredPoint) {
             ctx.beginPath();
             ctx.arc(hoveredPoint.x, hoveredPoint.y, 6, 0, Math.PI * 2);
-            ctx.fillStyle = isPositive ? '#10b981' : '#ef4444';
+            ctx.fillStyle = '#0047AB'; // --accent color
             ctx.fill();
-            ctx.strokeStyle = '#fff';
+            ctx.strokeStyle = '#F5F5F0'; // --background color
             ctx.lineWidth = 2;
             ctx.stroke();
 
@@ -116,7 +109,7 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
             ctx.beginPath();
             ctx.moveTo(hoveredPoint.x, padding.top);
             ctx.lineTo(hoveredPoint.x, dimensions.height - padding.bottom);
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.strokeStyle = '#D1D1D1'; // --border color
             ctx.lineWidth = 1;
             ctx.setLineDash([5, 5]);
             ctx.stroke();
@@ -125,7 +118,7 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
 
         // Draw time labels
         const timeLabels = 5;
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fillStyle = '#4A4A4A'; // --text-secondary color
         ctx.font = '11px sans-serif';
         ctx.textAlign = 'center';
         for (let i = 0; i < timeLabels; i++) {
@@ -133,7 +126,7 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
             const x = getX(index);
             const date = new Date(data[index][0]);
             let label = '';
-            
+
             if (timeRange === '1') {
                 label = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             } else if (timeRange === '7') {
@@ -141,7 +134,7 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
             } else {
                 label = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
             }
-            
+
             ctx.fillText(label, x, dimensions.height - padding.bottom + 20);
         }
     }, [data, dimensions, hoveredPoint, isPositive, timeRange]);
@@ -193,9 +186,9 @@ export default function TokenChart({ data, isPositive, timeRange }: TokenChartPr
     return (
         <div className="relative">
             {hoveredPoint && (
-                <div className="absolute top-0 left-0 bg-black/90 border border-white/20 rounded-lg px-4 py-2 pointer-events-none z-10">
-                    <div className="text-white font-bold text-lg">{formatPrice(hoveredPoint.price)}</div>
-                    <div className="text-gray-400 text-xs">
+                <div className="absolute top-0 left-0 bg-surface border border-border rounded-[2px] px-4 py-2 pointer-events-none z-10">
+                    <div className="text-text-primary font-semibold text-lg">{formatPrice(hoveredPoint.price)}</div>
+                    <div className="text-text-secondary text-xs">
                         {hoveredPoint.date.toLocaleString()}
                     </div>
                 </div>

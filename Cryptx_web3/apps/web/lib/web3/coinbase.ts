@@ -37,9 +37,49 @@ export async function connectCoinbaseWallet(): Promise<CoinbaseConnection> {
     }
 
     try {
+        // Check if Coinbase Wallet extension is available
+        let coinbaseExtensionProvider: any = null;
+
+        if ((window as any).ethereum?.providers?.length) {
+            // Multiple providers - find Coinbase specifically
+            coinbaseExtensionProvider = (window as any).ethereum.providers.find(
+                (p: any) => p.isCoinbaseWallet || p.isCoinbaseBrowser
+            );
+        } else if ((window as any).ethereum?.isCoinbaseWallet) {
+            // Single provider and it's Coinbase
+            coinbaseExtensionProvider = (window as any).ethereum;
+        }
+
+        // If Coinbase extension is available, use it directly
+        if (coinbaseExtensionProvider) {
+            const accounts = await coinbaseExtensionProvider.request({
+                method: 'eth_requestAccounts',
+            });
+
+            if (!accounts || accounts.length === 0) {
+                throw new Error('No accounts found');
+            }
+
+            const address = ethers.getAddress(accounts[0]);
+
+            const chainIdHex = await coinbaseExtensionProvider.request({
+                method: 'eth_chainId',
+            });
+            const chainId = parseInt(chainIdHex, 16);
+
+            const provider = new ethers.BrowserProvider(coinbaseExtensionProvider);
+
+            return {
+                provider,
+                address,
+                chainId,
+                coinbaseProvider: coinbaseExtensionProvider,
+            };
+        }
+
+        // Fallback to Coinbase Wallet SDK (for mobile or if extension not found)
         initializeCoinbaseWallet();
 
-        // Request accounts
         const accounts = await coinbaseProvider.request({
             method: 'eth_requestAccounts',
         });
@@ -67,11 +107,11 @@ export async function connectCoinbaseWallet(): Promise<CoinbaseConnection> {
         };
     } catch (error: any) {
         console.error('Coinbase Wallet connection error:', error);
-        
+
         if (error.code === 4001) {
             throw new Error('User rejected connection');
         }
-        
+
         throw new Error(`Coinbase Wallet connection failed: ${error.message || error}`);
     }
 }

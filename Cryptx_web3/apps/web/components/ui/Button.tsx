@@ -18,7 +18,7 @@ export function Button({
     const baseStyles = "inline-flex items-center justify-center font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed rounded-[2px]";
 
     const variants = {
-        primary: "bg-accent text-[--background] hover:opacity-90 border border-accent",
+        primary: "bg-accent text-white hover:opacity-90 border border-accent",
         secondary: "bg-surface text-text-primary hover:bg-border border border-border",
         outline: "border border-border text-text-primary hover:bg-surface bg-transparent",
         ghost: "text-text-secondary hover:text-text-primary hover:bg-surface"

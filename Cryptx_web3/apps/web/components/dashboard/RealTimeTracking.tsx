@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { coinGeckoApi, TokenPrice, POPULAR_TOKENS } from '@/lib/coinGeckoApi';
 import { Card } from '@/components/ui/Card';
@@ -10,6 +10,10 @@ interface TokenWithBalance extends TokenPrice {
     valueUsd?: number;
 }
 
+// Cache for token data
+let tokenCache: { data: TokenWithBalance[]; timestamp: number } | null = null;
+const CACHE_DURATION = 30000; // 30 seconds
+
 export default function RealTimeTracking() {
     const router = useRouter();
     const [tokens, setTokens] = useState<TokenWithBalance[]>([]);
@@ -18,47 +22,59 @@ export default function RealTimeTracking() {
     const [filter, setFilter] = useState<'all' | 'gainers' | 'losers'>('all');
     const [searchQuery, setSearchQuery] = useState('');
 
-    const loadTokens = async () => {
+    const loadTokens = useCallback(async (force = false) => {
         try {
+            // Check cache first
+            if (!force && tokenCache && Date.now() - tokenCache.timestamp < CACHE_DURATION) {
+                setTokens(tokenCache.data);
+                setLastUpdate(new Date(tokenCache.timestamp));
+                setLoading(false);
+                return;
+            }
+
             const data = await coinGeckoApi.getPopularTokens();
+            const now = Date.now();
+            tokenCache = { data, timestamp: now };
             setTokens(data);
-            setLastUpdate(new Date());
+            setLastUpdate(new Date(now));
         } catch (error) {
             console.error('Error loading tokens:', error);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         loadTokens();
 
         // Auto-refresh every 30 seconds
-        const interval = setInterval(loadTokens, 30000);
+        const interval = setInterval(() => loadTokens(true), 30000);
         return () => clearInterval(interval);
-    }, []);
+    }, [loadTokens]);
 
-    const filteredTokens = tokens.filter(token => {
-        // Search filter
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            if (!token.name.toLowerCase().includes(query) && 
-                !token.symbol.toLowerCase().includes(query)) {
-                return false;
+    const filteredTokens = useMemo(() => {
+        return tokens.filter(token => {
+            // Search filter
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                if (!token.name.toLowerCase().includes(query) &&
+                    !token.symbol.toLowerCase().includes(query)) {
+                    return false;
+                }
             }
-        }
 
-        // Price change filter
-        if (filter === 'gainers') {
-            return token.price_change_percentage_24h > 0;
-        } else if (filter === 'losers') {
-            return token.price_change_percentage_24h < 0;
-        }
+            // Price change filter
+            if (filter === 'gainers') {
+                return token.price_change_percentage_24h > 0;
+            } else if (filter === 'losers') {
+                return token.price_change_percentage_24h < 0;
+            }
 
-        return true;
-    });
+            return true;
+        });
+    }, [tokens, searchQuery, filter]);
 
-    const formatPrice = (price: number) => {
+    const formatPrice = useCallback((price: number) => {
         if (price < 0.01) {
             return `$${price.toFixed(6)}`;
         } else if (price < 1) {
@@ -66,19 +82,19 @@ export default function RealTimeTracking() {
         } else {
             return `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
-    };
+    }, []);
 
-    const formatPercentage = (percentage: number) => {
+    const formatPercentage = useCallback((percentage: number) => {
         const sign = percentage >= 0 ? '+' : '';
         return `${sign}${percentage.toFixed(2)}%`;
-    };
+    }, []);
 
     if (loading) {
         return (
             <div className="flex items-center justify-center py-20">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                    <div className="text-gray-400">Loading live token data...</div>
+                    <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+                    <div className="text-text-secondary">Loading live token data...</div>
                 </div>
             </div>
         );
@@ -89,8 +105,8 @@ export default function RealTimeTracking() {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 className="text-2xl font-bold text-white mb-1">Real-Time Token Tracking</h2>
-                    <p className="text-sm text-gray-400">
+                    <h2 className="text-2xl font-bold text-text-primary mb-1">Real-Time Token Tracking</h2>
+                    <p className="text-sm text-text-secondary">
                         Live prices • Updated {lastUpdate.toLocaleTimeString()}
                     </p>
                 </div>
@@ -102,9 +118,9 @@ export default function RealTimeTracking() {
                         placeholder="Search tokens..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full px-4 py-2 pl-10 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 transition"
+                        className="w-full px-4 py-2 pl-10 bg-surface border border-border rounded-[2px] text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-accent transition"
                     />
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">🔍</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary">🔍</span>
                 </div>
             </div>
 
@@ -112,119 +128,131 @@ export default function RealTimeTracking() {
             <div className="flex gap-2">
                 <button
                     onClick={() => setFilter('all')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                        filter === 'all'
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                    }`}
+                    className={`px-4 py-2 rounded-[2px] text-sm font-medium transition ${filter === 'all'
+                            ? 'bg-accent text-white'
+                            : 'bg-surface text-text-secondary hover:bg-surface-elevated border border-border'
+                        }`}
                 >
                     All Tokens
                 </button>
                 <button
                     onClick={() => setFilter('gainers')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                        filter === 'gainers'
-                            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                    }`}
+                    className={`px-4 py-2 rounded-[2px] text-sm font-medium transition ${filter === 'gainers'
+                            ? 'bg-success text-white border border-success'
+                            : 'bg-surface text-text-secondary hover:bg-surface-elevated border border-border'
+                        }`}
                 >
-                    📈 Gainers
+                    Gainers
                 </button>
                 <button
                     onClick={() => setFilter('losers')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                        filter === 'losers'
-                            ? 'bg-red-500/20 text-red-400 border border-red-500/30'
-                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                    }`}
+                    className={`px-4 py-2 rounded-[2px] text-sm font-medium transition ${filter === 'losers'
+                            ? 'bg-error text-white border border-error'
+                            : 'bg-surface text-text-secondary hover:bg-surface-elevated border border-border'
+                        }`}
                 >
-                    📉 Losers
+                    Losers
                 </button>
             </div>
 
             {/* Tokens Grid */}
             <div className="grid gap-4">
                 {filteredTokens.map((token) => (
-                    <Card
+                    <TokenCard
                         key={token.id}
-                        hover={true}
+                        token={token}
+                        formatPrice={formatPrice}
+                        formatPercentage={formatPercentage}
                         onClick={() => router.push(`/dashboard/token/${token.id}`)}
-                        className="p-4 cursor-pointer group"
-                    >
-                        <div className="flex items-center justify-between">
-                            {/* Token Info */}
-                            <div className="flex items-center gap-4 flex-1">
-                                <img
-                                    src={token.image}
-                                    alt={token.name}
-                                    className="w-10 h-10 rounded-full"
-                                />
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="font-bold text-white group-hover:text-primary transition">
-                                            {token.name}
-                                        </h3>
-                                        <span className="text-xs text-gray-500 font-mono uppercase">
-                                            {token.symbol}
-                                        </span>
-                                    </div>
-                                    <div className="text-sm text-gray-400 mt-0.5">
-                                        Market Cap: ${(token.market_cap / 1e9).toFixed(2)}B
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Price Info */}
-                            <div className="text-right">
-                                <div className="text-xl font-bold text-white mb-1">
-                                    {formatPrice(token.current_price)}
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div
-                                        className={`text-sm font-medium ${
-                                            token.price_change_percentage_24h >= 0
-                                                ? 'text-green-400'
-                                                : 'text-red-400'
-                                        }`}
-                                    >
-                                        {formatPercentage(token.price_change_percentage_24h)}
-                                    </div>
-                                    {token.price_change_percentage_7d !== undefined && (
-                                        <div className="text-xs text-gray-500">
-                                            7d: {formatPercentage(token.price_change_percentage_7d)}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Sparkline */}
-                            {token.sparkline_in_7d && (
-                                <div className="ml-6 hidden lg:block">
-                                    <MiniSparkline
-                                        data={token.sparkline_in_7d.price}
-                                        isPositive={token.price_change_percentage_7d >= 0}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </Card>
+                    />
                 ))}
 
                 {filteredTokens.length === 0 && (
-                    <div className="text-center py-12 text-gray-500">
+                    <div className="text-center py-12 text-text-secondary">
                         No tokens found matching your search.
                     </div>
                 )}
             </div>
 
             {/* Auto-refresh indicator */}
-            <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <div className="flex items-center justify-center gap-2 text-xs text-text-secondary">
+                <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                 Auto-refreshing every 30 seconds
             </div>
         </div>
     );
 }
+
+// Memoized Token Card Component
+const TokenCard = React.memo(({ token, formatPrice, formatPercentage, onClick }: any) => (
+    <Card
+        hover={true}
+        onClick={onClick}
+        className="p-4 cursor-pointer group"
+    >
+        <div className="flex items-center justify-between">
+            {/* Token Info */}
+            <div className="flex items-center gap-4 flex-1">
+                <img
+                    src={token.image}
+                    alt={token.name}
+                    className="w-10 h-10 rounded-full"
+                    loading="lazy"
+                />
+                <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-text-primary group-hover:text-accent transition">
+                            {token.name}
+                        </h3>
+                        <span className="text-xs text-text-secondary font-mono uppercase">
+                            {token.symbol}
+                        </span>
+                    </div>
+                    <div className="text-sm text-text-secondary mt-0.5">
+                        Market Cap: ${(token.market_cap / 1e9).toFixed(2)}B
+                    </div>
+                </div>
+            </div>
+
+            {/* Price Info */}
+            <div className="text-right">
+                <div className="text-xl font-bold text-text-primary mb-1">
+                    {formatPrice(token.current_price)}
+                </div>
+                <div className="flex items-center gap-3">
+                    <div
+                        className={`text-sm font-medium ${token.price_change_percentage_24h >= 0
+                                ? 'text-success'
+                                : 'text-error'
+                            }`}
+                    >
+                        {formatPercentage(token.price_change_percentage_24h)}
+                    </div>
+                    {token.price_change_percentage_7d !== undefined && (
+                        <div className="text-xs text-text-secondary">
+                            7d: {formatPercentage(token.price_change_percentage_7d)}
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Sparkline */}
+            {token.sparkline_in_7d && (
+                <div className="ml-6 hidden lg:block">
+                    <MiniSparkline
+                        data={token.sparkline_in_7d.price}
+                        isPositive={token.price_change_percentage_7d >= 0}
+                    />
+                </div>
+            )}
+        </div>
+    </Card>
+));
+
+TokenCard.displayName = 'TokenCard';
+
+// Required React import for memo
+import React from 'react';
 
 // Mini sparkline component
 function MiniSparkline({ data, isPositive }: { data: number[]; isPositive: boolean }) {
@@ -245,7 +273,7 @@ function MiniSparkline({ data, isPositive }: { data: number[]; isPositive: boole
             <polyline
                 points={points}
                 fill="none"
-                stroke={isPositive ? '#10b981' : '#ef4444'}
+                stroke={isPositive ? '#2E7D32' : '#DC143C'}
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"

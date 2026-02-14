@@ -16,6 +16,7 @@ export interface WalletData {
     id: string;
     address: string;
     nickname?: string;
+    provider?: string;
     valueUsd: number;
     chains: any[];
 }
@@ -82,7 +83,19 @@ export const walletApi = {
     },
 
     deleteWallet: async (id: string): Promise<void> => {
-        await apiClient.delete(`/wallets/${id}`);
+        console.log('🌐 API: Deleting wallet:', id);
+        console.log('🌐 API: Request URL:', `/wallets/${id}`);
+        console.log('🌐 API: Base URL:', apiClient.defaults.baseURL);
+        
+        try {
+            const response = await apiClient.delete(`/wallets/${id}`);
+            console.log('🌐 API: Delete successful:', response.data);
+            return response.data;
+        } catch (error: any) {
+            console.error('🌐 API: Delete failed:', error);
+            console.error('🌐 API: Error response:', error.response);
+            throw error;
+        }
     },
 
     getWalletBalances: async (id: string) => {

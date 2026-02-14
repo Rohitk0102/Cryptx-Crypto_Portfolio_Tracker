@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# CryptX Web3 Portfolio Tracker - Complete Startup Script
-# This script starts frontend, backend, and database services
+# CryptX Web3 Portfolio Tracker - Startup Script
+# This script starts frontend and backend services
 
 set -e  # Exit on any error
 
@@ -19,6 +19,10 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 API_DIR="$PROJECT_ROOT/apps/api"
 WEB_DIR="$PROJECT_ROOT/apps/web"
 LOG_DIR="$PROJECT_ROOT/logs"
+
+# Port configuration
+BACKEND_PORT=5001
+FRONTEND_PORT=3000
 
 # Create logs directory
 mkdir -p "$LOG_DIR"
@@ -65,31 +69,6 @@ kill_port() {
     fi
 }
 
-# Function to wait for service to be ready
-wait_for_service() {
-    local url=$1
-    local service_name=$2
-    local max_attempts=30
-    local attempt=1
-    
-    print_status "Waiting for $service_name to be ready..."
-    
-    while [ $attempt -le $max_attempts ]; do
-        if curl -s "$url" >/dev/null 2>&1; then
-            print_success "$service_name is ready!"
-            return 0
-        fi
-        
-        echo -n "."
-        sleep 2
-        attempt=$((attempt + 1))
-    done
-    
-    echo
-    print_error "$service_name failed to start within timeout period"
-    return 1
-}
-
 # Function to check prerequisites
 check_prerequisites() {
     print_header "CHECKING PREREQUISITES"
@@ -112,20 +91,6 @@ check_prerequisites() {
         exit 1
     fi
     
-    # Check PostgreSQL
-    if command_exists psql; then
-        print_success "PostgreSQL client found"
-    else
-        print_warning "PostgreSQL client not found. Make sure PostgreSQL is installed and running."
-    fi
-    
-    # Check Redis
-    if command_exists redis-cli; then
-        print_success "Redis client found"
-    else
-        print_warning "Redis client not found. Make sure Redis is installed and running."
-    fi
-    
     # Check for required environment files
     if [ ! -f "$API_DIR/.env" ]; then
         print_error "Backend .env file not found at $API_DIR/.env"
@@ -146,19 +111,32 @@ check_prerequisites() {
 install_dependencies() {
     print_header "INSTALLING DEPENDENCIES"
     
-    print_status "Installing root dependencies..."
     cd "$PROJECT_ROOT"
-    npm install
     
-    print_status "Installing backend dependencies..."
-    cd "$API_DIR"
-    npm install
+    if [ ! -d "node_modules" ]; then
+        print_status "Installing root dependencies..."
+        npm install
+    else
+        print_success "Root dependencies already installed"
+    fi
     
-    print_status "Installing frontend dependencies..."
-    cd "$WEB_DIR"
-    npm install
+    if [ ! -d "$API_DIR/node_modules" ]; then
+        print_status "Installing backend dependencies..."
+        cd "$API_DIR"
+        npm install
+    else
+        print_success "Backend dependencies already installed"
+    fi
     
-    print_success "All dependencies installed!"
+    if [ ! -d "$WEB_DIR/node_modules" ]; then
+        print_status "Installing frontend dependencies..."
+        cd "$WEB_DIR"
+        npm install
+    else
+        print_success "Frontend dependencies already installed"
+    fi
+    
+    print_success "All dependencies ready!"
 }
 
 # Function to setup database
@@ -182,33 +160,57 @@ setup_database() {
     print_success "Database setup completed!"
 }
 
-# Function to start services
+# Function to start services (using npm workspaces)
 start_services() {
     print_header "STARTING SERVICES"
     
     # Kill existing processes on required ports
-    kill_port 5000  # Backend
-    kill_port 3000  # Frontend
+    kill_port $BACKEND_PORT
+    kill_port $FRONTEND_PORT
     
-    # Start backend
+    cd "$PROJECT_ROOT"
+    
+    print_status "Starting both backend and frontend..."
+    print_status "Backend will run on port $BACKEND_PORT"
+    print_status "Frontend will run on port $FRONTEND_PORT"
+    echo ""
+    
+    # Use npm workspaces to start both services with concurrently
+    npm run dev
+}
+
+# Function to start backend only
+start_backend() {
+    print_header "STARTING BACKEND ONLY"
+    
+    kill_port $BACKEND_PORT
+    
     print_status "Starting backend server..."
-    cd "$API_DIR"
-    npm run dev > "$LOG_DIR/backend.log" 2>&1 &
+    cd "$PROJECT_ROOT"
+    npm run dev:api > "$LOG_DIR/backend.log" 2>&1 &
     BACKEND_PID=$!
-    echo "Backend PID: $BACKEND_PID"
-    
-    # Start frontend
-    print_status "Starting frontend server..."
-    cd "$WEB_DIR"
-    npm run dev > "$LOG_DIR/frontend.log" 2>&1 &
-    FRONTEND_PID=$!
-    echo "Frontend PID: $FRONTEND_PID"
-    
-    # Save PIDs for cleanup
     echo "$BACKEND_PID" > "$LOG_DIR/backend.pid"
+    
+    print_success "Backend started (PID: $BACKEND_PID)"
+    print_status "Backend running on http://localhost:$BACKEND_PORT"
+    print_status "Logs: $LOG_DIR/backend.log"
+}
+
+# Function to start frontend only
+start_frontend() {
+    print_header "STARTING FRONTEND ONLY"
+    
+    kill_port $FRONTEND_PORT
+    
+    print_status "Starting frontend server..."
+    cd "$PROJECT_ROOT"
+    npm run dev:web > "$LOG_DIR/frontend.log" 2>&1 &
+    FRONTEND_PID=$!
     echo "$FRONTEND_PID" > "$LOG_DIR/frontend.pid"
     
-    print_success "Services started!"
+    print_success "Frontend started (PID: $FRONTEND_PID)"
+    print_status "Frontend running on http://localhost:$FRONTEND_PORT"
+    print_status "Logs: $LOG_DIR/frontend.log"
 }
 
 # Function to show service status
@@ -216,27 +218,31 @@ show_status() {
     print_header "SERVICE STATUS"
     
     # Check backend
-    if port_in_use 5000; then
-        print_success "Backend is running on port 5000"
-        curl -s http://localhost:5000/health >/dev/null && print_success "Backend health check passed" || print_warning "Backend health check failed"
+    if port_in_use $BACKEND_PORT; then
+        print_success "✅ Backend is running on port $BACKEND_PORT"
+        if curl -s "http://localhost:$BACKEND_PORT/health" > /dev/null 2>&1; then
+            print_success "✅ Backend health check passed"
+        else
+            print_warning "⚠️  Backend health check failed"
+        fi
     else
-        print_error "Backend is not running"
+        print_error "❌ Backend is not running"
     fi
     
     # Check frontend
-    if port_in_use 3000; then
-        print_success "Frontend is running on port 3000"
+    if port_in_use $FRONTEND_PORT; then
+        print_success "✅ Frontend is running on port $FRONTEND_PORT"
     else
-        print_error "Frontend is not running"
+        print_error "❌ Frontend is not running"
     fi
     
     # Show URLs
-    echo
-    print_status "Service URLs:"
-    echo -e "${CYAN}  Frontend:${NC} http://localhost:3000"
-    echo -e "${CYAN}  Backend API:${NC} http://localhost:5000"
-    echo -e "${CYAN}  Health Check:${NC} http://localhost:5000/health"
-    echo -e "${CYAN}  API Docs:${NC} http://localhost:5000/api-docs (if available)"
+    echo ""
+    print_header "SERVICE URLS"
+    echo -e "${CYAN}  🌐 Frontend:${NC}      http://localhost:$FRONTEND_PORT"
+    echo -e "${CYAN}  🔌 Backend API:${NC}   http://localhost:$BACKEND_PORT/api"
+    echo -e "${CYAN}  ❤️  Health Check:${NC}  http://localhost:$BACKEND_PORT/health"
+    echo ""
 }
 
 # Function to stop services
@@ -248,7 +254,7 @@ stop_services() {
         BACKEND_PID=$(cat "$LOG_DIR/backend.pid")
         if kill -0 $BACKEND_PID 2>/dev/null; then
             print_status "Stopping backend (PID: $BACKEND_PID)..."
-            kill $BACKEND_PID
+            kill $BACKEND_PID 2>/dev/null || true
         fi
         rm -f "$LOG_DIR/backend.pid"
     fi
@@ -258,67 +264,99 @@ stop_services() {
         FRONTEND_PID=$(cat "$LOG_DIR/frontend.pid")
         if kill -0 $FRONTEND_PID 2>/dev/null; then
             print_status "Stopping frontend (PID: $FRONTEND_PID)..."
-            kill $FRONTEND_PID
+            kill $FRONTEND_PID 2>/dev/null || true
         fi
         rm -f "$LOG_DIR/frontend.pid"
     fi
     
     # Kill any remaining processes on ports
-    kill_port 5000
-    kill_port 3000
+    kill_port $BACKEND_PORT
+    kill_port $FRONTEND_PORT
     
     print_success "All services stopped!"
 }
 
 # Function to show logs
 show_logs() {
-    print_header "SHOWING LOGS"
+    local service=${1:-both}
     
-    echo -e "${BLUE}Backend logs:${NC}"
-    if [ -f "$LOG_DIR/backend.log" ]; then
-        tail -f "$LOG_DIR/backend.log"
-    else
-        print_warning "No backend log file found"
-    fi
-}
-
-# Function to cleanup
-cleanup() {
-    print_status "Performing cleanup..."
-    stop_services
-    print_success "Cleanup completed!"
+    case $service in
+        "backend")
+            print_header "BACKEND LOGS"
+            if [ -f "$LOG_DIR/backend.log" ]; then
+                tail -f "$LOG_DIR/backend.log"
+            else
+                print_warning "No backend log file found"
+            fi
+            ;;
+        "frontend")
+            print_header "FRONTEND LOGS"
+            if [ -f "$LOG_DIR/frontend.log" ]; then
+                tail -f "$LOG_DIR/frontend.log"
+            else
+                print_warning "No frontend log file found"
+            fi
+            ;;
+        "both")
+            print_header "ALL LOGS"
+            if [ -f "$LOG_DIR/backend.log" ] && [ -f "$LOG_DIR/frontend.log" ]; then
+                tail -f "$LOG_DIR/backend.log" "$LOG_DIR/frontend.log"
+            else
+                print_warning "No log files found"
+            fi
+            ;;
+        *)
+            print_error "Unknown service: $service"
+            print_status "Usage: $0 logs [backend|frontend|both]"
+            ;;
+    esac
 }
 
 # Function to show help
 show_help() {
-    echo "CryptX Web3 Portfolio Tracker - Startup Script"
-    echo
-    echo "Usage: $0 [COMMAND]"
-    echo
-    echo "Commands:"
-    echo "  start     Start all services (default)"
-    echo "  stop      Stop all services"
-    echo "  restart   Restart all services"
-    echo "  status    Show service status"
-    echo "  logs      Show service logs"
-    echo "  setup     Setup dependencies and database"
-    echo "  check     Check prerequisites"
-    echo "  cleanup   Stop services and cleanup"
-    echo "  help      Show this help message"
-    echo
-    echo "Examples:"
-    echo "  $0                # Start all services"
-    echo "  $0 start          # Start all services"
-    echo "  $0 stop           # Stop all services"
-    echo "  $0 logs           # View logs"
-    echo
+    cat << EOF
+${PURPLE}================================${NC}
+${PURPLE}CryptX Portfolio Tracker${NC}
+${PURPLE}================================${NC}
+
+${BLUE}Usage:${NC} $0 [COMMAND] [OPTIONS]
+
+${BLUE}Commands:${NC}
+  ${GREEN}start${NC}           Start both backend and frontend (default)
+  ${GREEN}start-backend${NC}   Start backend only
+  ${GREEN}start-frontend${NC}  Start frontend only
+  ${GREEN}stop${NC}            Stop all services
+  ${GREEN}restart${NC}         Restart all services
+  ${GREEN}status${NC}          Show service status
+  ${GREEN}logs${NC}            Show service logs
+  ${GREEN}setup${NC}           Setup dependencies and database
+  ${GREEN}check${NC}           Check prerequisites
+  ${GREEN}help${NC}            Show this help message
+
+${BLUE}Examples:${NC}
+  $0                    # Start all services
+  $0 start              # Start all services
+  $0 start-backend      # Start backend only
+  $0 stop               # Stop all services
+  $0 status             # Check status
+  $0 logs               # View all logs
+  $0 logs backend       # View backend logs only
+
+${BLUE}Ports:${NC}
+  Backend:  http://localhost:$BACKEND_PORT
+  Frontend: http://localhost:$FRONTEND_PORT
+
+${BLUE}Components:${NC}
+  • Backend API (Node.js + Express + Prisma)
+  • Frontend (Next.js + React)
+  • Database (PostgreSQL - Neon Cloud)
+  • Redis (Optional, currently disabled)
+
+EOF
 }
 
 # Main script logic
 main() {
-    # Set up signal handlers for cleanup
-    trap cleanup EXIT INT TERM
-    
     # Change to project root
     cd "$PROJECT_ROOT"
     
@@ -330,11 +368,20 @@ main() {
             check_prerequisites
             install_dependencies
             setup_database
+            echo ""
             start_services
-            sleep 3
+            ;;
+        "start-backend")
+            check_prerequisites
+            start_backend
+            echo ""
             show_status
-            print_status "Press Ctrl+C to stop all services"
-            wait
+            ;;
+        "start-frontend")
+            check_prerequisites
+            start_frontend
+            echo ""
+            show_status
             ;;
         "stop")
             stop_services
@@ -342,15 +389,15 @@ main() {
         "restart")
             stop_services
             sleep 2
+            check_prerequisites
+            install_dependencies
             start_services
-            sleep 3
-            show_status
             ;;
         "status")
             show_status
             ;;
         "logs")
-            show_logs
+            show_logs ${2:-both}
             ;;
         "setup")
             check_prerequisites
@@ -360,14 +407,12 @@ main() {
         "check")
             check_prerequisites
             ;;
-        "cleanup")
-            cleanup
-            ;;
         "help"|"-h"|"--help")
             show_help
             ;;
         *)
             print_error "Unknown command: $COMMAND"
+            echo ""
             show_help
             exit 1
             ;;

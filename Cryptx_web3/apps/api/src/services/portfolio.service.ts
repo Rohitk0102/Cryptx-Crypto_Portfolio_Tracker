@@ -21,6 +21,7 @@ export interface PortfolioData {
         id: string;
         address: string;
         nickname?: string;
+        provider?: string;
         valueUsd: number;
         chains: ChainBalance[];
     }[];
@@ -142,6 +143,7 @@ export async function aggregatePortfolio(userId: string): Promise<PortfolioData>
             id: wallet.id,
             address: wallet.address,
             nickname: wallet.nickname || undefined,
+            provider: wallet.provider || undefined,
             valueUsd: walletTotalUsd,
             chains: chainBalances,
         });

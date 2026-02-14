@@ -92,13 +92,35 @@ export async function connectWalletConnect(): Promise<WalletConnectConnection> {
             walletConnectModal.openModal({ uri });
         }
 
-        // Wait for session approval with timeout
+        // Add modal close listener to detect cancellation
+        let modalClosed = false;
+        const checkModalClosed = setInterval(() => {
+            // Check if modal was closed by user
+            const modalElement = document.querySelector('wcm-modal');
+            if (!modalElement || modalElement.getAttribute('aria-hidden') === 'true') {
+                modalClosed = true;
+                clearInterval(checkModalClosed);
+            }
+        }, 500);
+
+        // Wait for session approval with timeout and cancellation detection
         const session = await Promise.race([
             approval(),
-            new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Connection timeout - please try again')), 60000)
-            )
+            new Promise((_, reject) => {
+                // Check for modal closure every 500ms
+                const cancelCheck = setInterval(() => {
+                    if (modalClosed) {
+                        clearInterval(cancelCheck);
+                        clearInterval(checkModalClosed);
+                        walletConnectModal.closeModal();
+                        reject(new Error('User closed the connection modal'));
+                    }
+                }, 500);
+            })
         ]);
+
+        // Clear the interval
+        clearInterval(checkModalClosed);
 
         // Close modal after successful connection
         walletConnectModal.closeModal();
@@ -123,15 +145,22 @@ export async function connectWalletConnect(): Promise<WalletConnectConnection> {
             signClient: client,
             session,
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error('WalletConnect connection error:', error);
-        
-        // Make sure modal is closed on error
+
+        // Make sure WalletConnect modal is closed on error
         if (modal) {
             modal.closeModal();
         }
-        
-        throw new Error('Failed to connect with WalletConnect. Please try again or use MetaMask.');
+
+        // Re-throw the actual error message or provide a helpful one
+        if (error.message?.includes('timeout')) {
+            throw error; // Keep the timeout message
+        }
+        if (error.message?.includes('closed')) {
+            throw new Error('Connection cancelled by user');
+        }
+        throw new Error('Failed to connect with WalletConnect. Please try again.');
     }
 }
 

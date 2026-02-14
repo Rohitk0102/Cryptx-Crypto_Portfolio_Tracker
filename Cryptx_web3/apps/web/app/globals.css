@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* Swiss Design System */
+/* University Department Color Palette */
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
@@ -9,6 +9,8 @@
   --color-text-secondary: var(--text-secondary);
   --color-border: var(--border);
   --color-accent: var(--accent);
+  --color-accent-yellow: var(--accent-yellow);
+  --color-accent-red: var(--accent-red);
 
   --color-success: var(--semantic-success);
   --color-error: var(--semantic-error);
@@ -30,20 +32,34 @@
 }
 
 :root {
-  /* Light Mode (Default) */
-  --background: #FFFFFF;
-  --surface: #F5F5F5;
-  --surface-elevated: #FFFFFF;
-  --text-primary: #1A1A1A;
-  --text-secondary: #666666;
-  --border: #E0E0E0;
-  --accent: #000000;
+  /* University Department Color Palette */
+  --background: #F5F5F0;
+  /* Cream/Off-white background */
+  --surface: #FFFFFF;
+  /* White for cards */
+  --surface-elevated: #FAFAFA;
+  /* Slightly elevated surface */
+  --text-primary: #000000;
+  /* Black primary text */
+  --text-secondary: #4A4A4A;
+  /* Dark gray secondary text */
+  --border: #D1D1D1;
+  /* Light gray borders */
+  --accent: #0047AB;
+  /* Royal Blue primary accent */
+  --accent-yellow: #F59E0B;
+  /* Golden Yellow secondary accent */
+  --accent-red: #DC143C;
+  /* Crimson Red tertiary accent */
 
   /* Semantic Colors */
   --semantic-success: #2E7D32;
-  --semantic-error: #C62828;
-  --semantic-warning: #F57C00;
-  --semantic-info: #1976D2;
+  --semantic-error: #DC143C;
+  /* Use crimson for errors */
+  --semantic-warning: #F59E0B;
+  /* Use golden yellow for warnings */
+  --semantic-info: #0047AB;
+  /* Use royal blue for info */
 
   /* Spacing Scale (8px base) */
   --spacing-1: 8px;
@@ -72,21 +88,6 @@
   --transition: 200ms ease;
 }
 
-[data-theme="dark"] {
-  --background: #1A1A1A;
-  --surface: #242424;
-  --surface-elevated: #2E2E2E;
-  --text-primary: #F5F5F5;
-  --text-secondary: #B0B0B0;
-  --border: #424242;
-  --accent: #FFFFFF;
-
-  --semantic-success: #4CAF50;
-  --semantic-error: #EF5350;
-  --semantic-warning: #FFA726;
-  --semantic-info: #42A5F5;
-}
-
 * {
   transition: background-color var(--transition), border-color var(--transition), color var(--transition);
 }
@@ -100,27 +101,20 @@ body {
   line-height: 1.5;
 }
 
-/* Grid System */
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: var(--spacing-3);
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 var(--spacing-3);
+/* Remove theme toggle styles since we're not using context */
+.theme-toggle {
+  display: none;
 }
 
-/* Typography Utilities */
-.text-primary {
-  color: var(--text-primary);
+/* Ensure WalletConnect modal appears above our custom modals */
+wcm-modal,
+w3m-modal,
+[data-walletconnect-modal] {
+  z-index: 99999 !important;
 }
 
-.text-secondary {
-  color: var(--text-secondary);
-}
-
-/* Remove default focus outline and add custom one */
-*:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+/* WalletConnect backdrop */
+wcm-modal::part(overlay),
+w3m-modal::part(overlay) {
+  z-index: 99998 !important;
 }

@@ -7,6 +7,9 @@ import redis from './utils/redis';
 import authRoutes from './routes/auth.routes';
 import walletRoutes from './routes/wallet.routes';
 import portfolioRoutes from './routes/portfolio.routes';
+import transactionRoutes from './routes/transaction.routes';
+import pnlRoutes from './routes/pnl.routes';
+import forecastingRoutes from './routes/forecasting.routes';
 // Rate limiting disabled - imports commented out
 // import {
 //     applyRateLimits,
@@ -33,20 +36,32 @@ console.log('⚠️  Rate limiting disabled (all environments)');
 
 // Health check (excluded from rate limiting)
 app.get('/health', async (req: Request, res: Response) => {
-    const dbHealthy = await prisma.$queryRaw`SELECT 1`.then(() => true).catch(() => false);
-    
+    // Add timeout helper
+    const withTimeout = <T>(promise: Promise<T>, ms: number, fallback: T): Promise<T> => {
+        return Promise.race([
+            promise,
+            new Promise<T>((resolve) => setTimeout(() => resolve(fallback), ms))
+        ]);
+    };
+
+    const dbHealthy = await withTimeout(
+        prisma.$queryRaw`SELECT 1`.then(() => true).catch(() => false),
+        5000,
+        false
+    );
+
     let redisHealthy = false;
     try {
-        redisHealthy = await redis.healthCheck();
+        redisHealthy = await withTimeout(redis.healthCheck(), 3000, false);
     } catch (err) {
         // Redis is optional, so we don't fail the health check
         redisHealthy = false;
     }
-    
+
     // Server is healthy if database is working (Redis is optional)
     const status = dbHealthy ? 'ok' : 'degraded';
     const statusCode = status === 'ok' ? 200 : 503;
-    
+
     res.status(statusCode).json({
         status,
         timestamp: new Date().toISOString(),
@@ -72,6 +87,9 @@ app.get('/health', async (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/wallets', walletRoutes);
 app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/transactions', transactionRoutes);
+app.use('/api/pnl', pnlRoutes);
+app.use('/api/forecasting', forecastingRoutes);
 
 // Error handling
 app.use((err: Error, req: Request, res: Response, next: any) => {
@@ -86,12 +104,18 @@ const startServer = async () => {
         await prisma.$connect();
         console.log('✅ Database connected');
 
-        // Try to connect to Redis (optional in development)
+        // Connect to Redis (optional - server will work without it)
         try {
             await redis.connect();
-        } catch (redisError) {
-            console.warn('⚠️  Redis connection failed - continuing without Redis (caching disabled)');
-            console.warn('   To enable Redis, make sure Redis is running or update REDIS_URL in .env');
+            const isHealthy = await redis.healthCheck();
+            if (isHealthy) {
+                console.log('✅ Redis connected');
+            } else {
+                console.warn('⚠️  Redis connection unstable - continuing without Redis');
+            }
+        } catch (redisError: any) {
+            console.warn('⚠️  Redis unavailable - continuing without Redis');
+            console.log('   To enable Redis: Start Redis server or set DISABLE_REDIS=true in .env');
         }
 
         app.listen(PORT, () => {

@@ -138,12 +138,29 @@ export async function connectMetaMask(): Promise<WalletConnection> {
     }
 
     try {
-        // Request account access
-        await (window.ethereum as MetaMaskProvider).request({
+        // Handle multiple wallet providers (e.g., MetaMask + Coinbase)
+        let metaMaskProvider: any;
+
+        if ((window.ethereum as any).providers?.length) {
+            // Multiple providers detected - find MetaMask specifically
+            metaMaskProvider = (window.ethereum as any).providers.find((p: any) => p.isMetaMask);
+
+            if (!metaMaskProvider) {
+                throw new Error('MetaMask provider not found. Please ensure MetaMask extension is installed.');
+            }
+        } else if ((window.ethereum as any).isMetaMask) {
+            // Single provider and it's MetaMask
+            metaMaskProvider = window.ethereum;
+        } else {
+            throw new Error('MetaMask is not available. Please install MetaMask extension.');
+        }
+
+        // Request account access from the specific MetaMask provider
+        await metaMaskProvider.request({
             method: 'eth_requestAccounts'
         });
 
-        const provider = new ethers.BrowserProvider(window.ethereum as MetaMaskProvider);
+        const provider = new ethers.BrowserProvider(metaMaskProvider);
         const signer = await provider.getSigner();
         const address = await signer.getAddress();
         const network = await provider.getNetwork();

@@ -26,7 +26,7 @@ export default function TokenDetailPage() {
                 coinGeckoApi.getTokenDetails(tokenId),
                 coinGeckoApi.getTokenPriceHistory(tokenId, timeRange)
             ]);
-            
+
             setToken(tokenData);
             setChartData(priceData);
             setLastUpdate(new Date());
@@ -72,8 +72,8 @@ export default function TokenDetailPage() {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                    <div className="text-gray-400">Loading token data...</div>
+                    <div className="w-8 h-8 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+                    <div className="text-text-secondary">Loading token data...</div>
                 </div>
             </div>
         );
@@ -83,21 +83,15 @@ export default function TokenDetailPage() {
     const isPositive = priceChange >= 0;
 
     return (
-        <div className="min-h-screen bg-background text-foreground pb-20">
-            {/* Background Effects */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/10 blur-[100px]" />
-                <div className="absolute bottom-[0%] left-[0%] w-[30%] h-[30%] rounded-full bg-accent/5 blur-[100px]" />
-            </div>
-
+        <div className="min-h-screen bg-background text-text-primary pb-20">
             <div className="relative z-10 container mx-auto px-4 py-8 max-w-6xl">
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
                     <button
                         onClick={() => router.push('/dashboard?tab=tracking')}
-                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/30 transition group"
+                        className="p-2 rounded-[2px] bg-surface hover:bg-surface-elevated border border-border hover:border-accent transition group"
                     >
-                        <svg className="w-6 h-6 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-6 h-6 text-text-secondary group-hover:text-accent transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
                     </button>
@@ -105,12 +99,12 @@ export default function TokenDetailPage() {
                     <div className="flex items-center gap-4 flex-1">
                         <img src={token.image} alt={token.name} className="w-12 h-12 rounded-full" />
                         <div>
-                            <h1 className="text-2xl font-bold text-white">{token.name}</h1>
-                            <p className="text-sm text-gray-400 uppercase">{token.symbol}</p>
+                            <h1 className="text-2xl font-bold text-text-primary">{token.name}</h1>
+                            <p className="text-sm text-text-secondary uppercase">{token.symbol}</p>
                         </div>
                     </div>
 
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-text-secondary">
                         Updated: {lastUpdate.toLocaleTimeString()}
                     </div>
                 </div>
@@ -119,12 +113,12 @@ export default function TokenDetailPage() {
                 <Card className="p-6 mb-6">
                     <div className="flex items-end justify-between mb-6">
                         <div>
-                            <div className="text-4xl font-bold text-white mb-2">
+                            <div className="text-4xl font-bold text-text-primary mb-2">
                                 {formatPrice(token.current_price)}
                             </div>
-                            <div className={`text-lg font-medium ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
-                                {isPositive ? '+' : ''}{priceChange.toFixed(2)}% 
-                                <span className="text-sm text-gray-500 ml-2">(24h)</span>
+                            <div className={`text-lg font-medium ${isPositive ? 'text-success' : 'text-error'}`}>
+                                {isPositive ? '+' : ''}{priceChange.toFixed(2)}%
+                                <span className="text-sm text-text-secondary ml-2">(24h)</span>
                             </div>
                         </div>
 
@@ -139,11 +133,10 @@ export default function TokenDetailPage() {
                                 <button
                                     key={range.value}
                                     onClick={() => setTimeRange(range.value as TimeRange)}
-                                    className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-                                        timeRange === range.value
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-white/5 text-gray-400 hover:bg-white/10'
-                                    }`}
+                                    className={`px-4 py-2 rounded-[2px] text-sm font-medium transition ${timeRange === range.value
+                                            ? 'bg-accent text-white'
+                                            : 'bg-surface text-text-secondary hover:bg-surface-elevated border border-border'
+                                        }`}
                                 >
                                     {range.label}
                                 </button>
@@ -164,50 +157,50 @@ export default function TokenDetailPage() {
                 {/* Stats Grid */}
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <Card className="p-4">
-                        <div className="text-sm text-gray-400 mb-1">Market Cap</div>
-                        <div className="text-xl font-bold text-white">{formatLargeNumber(token.market_cap)}</div>
-                        <div className="text-xs text-gray-500 mt-1">Rank #{token.market_cap_rank}</div>
+                        <div className="text-sm text-text-secondary mb-1">Market Cap</div>
+                        <div className="text-xl font-bold text-text-primary">{formatLargeNumber(token.market_cap)}</div>
+                        <div className="text-xs text-text-secondary mt-1">Rank #{token.market_cap_rank}</div>
                     </Card>
 
                     <Card className="p-4">
-                        <div className="text-sm text-gray-400 mb-1">24h Volume</div>
-                        <div className="text-xl font-bold text-white">{formatLargeNumber(token.total_volume)}</div>
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-sm text-text-secondary mb-1">24h Volume</div>
+                        <div className="text-xl font-bold text-text-primary">{formatLargeNumber(token.total_volume)}</div>
+                        <div className="text-xs text-text-secondary mt-1">
                             Vol/MCap: {((token.total_volume / token.market_cap) * 100).toFixed(2)}%
                         </div>
                     </Card>
 
                     <Card className="p-4">
-                        <div className="text-sm text-gray-400 mb-1">Circulating Supply</div>
-                        <div className="text-xl font-bold text-white">{formatSupply(token.circulating_supply)}</div>
-                        <div className="text-xs text-gray-500 mt-1">{token.symbol}</div>
+                        <div className="text-sm text-text-secondary mb-1">Circulating Supply</div>
+                        <div className="text-xl font-bold text-text-primary">{formatSupply(token.circulating_supply)}</div>
+                        <div className="text-xs text-text-secondary mt-1">{token.symbol}</div>
                     </Card>
 
                     <Card className="p-4">
-                        <div className="text-sm text-gray-400 mb-1">Total Supply</div>
-                        <div className="text-xl font-bold text-white">
+                        <div className="text-sm text-text-secondary mb-1">Total Supply</div>
+                        <div className="text-xl font-bold text-text-primary">
                             {token.total_supply ? formatSupply(token.total_supply) : 'N/A'}
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">{token.symbol}</div>
+                        <div className="text-xs text-text-secondary mt-1">{token.symbol}</div>
                     </Card>
                 </div>
 
                 {/* Price Stats */}
                 <Card className="p-6 mb-6">
-                    <h2 className="text-lg font-bold text-white mb-4">Price Statistics</h2>
+                    <h2 className="text-lg font-bold text-text-primary mb-4">Price Statistics</h2>
                     <div className="grid md:grid-cols-2 gap-6">
                         <div>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm text-gray-400">24h Low</span>
-                                <span className="text-white font-medium">{formatPrice(token.low_24h)}</span>
+                                <span className="text-sm text-text-secondary">24h Low</span>
+                                <span className="text-text-primary font-medium">{formatPrice(token.low_24h)}</span>
                             </div>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm text-gray-400">24h High</span>
-                                <span className="text-white font-medium">{formatPrice(token.high_24h)}</span>
+                                <span className="text-sm text-text-secondary">24h High</span>
+                                <span className="text-text-primary font-medium">{formatPrice(token.high_24h)}</span>
                             </div>
-                            <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                            <div className="h-2 bg-surface-elevated rounded-[2px] overflow-hidden border border-border">
                                 <div
-                                    className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500"
+                                    className="h-full bg-accent"
                                     style={{
                                         width: `${((token.current_price - token.low_24h) / (token.high_24h - token.low_24h)) * 100}%`
                                     }}
@@ -217,16 +210,16 @@ export default function TokenDetailPage() {
 
                         <div>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm text-gray-400">All-Time High</span>
-                                <span className="text-white font-medium">{formatPrice(token.ath)}</span>
+                                <span className="text-sm text-text-secondary">All-Time High</span>
+                                <span className="text-text-primary font-medium">{formatPrice(token.ath)}</span>
                             </div>
                             <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm text-gray-400">From ATH</span>
-                                <span className="text-red-400 font-medium">
+                                <span className="text-sm text-text-secondary">From ATH</span>
+                                <span className="text-error font-medium">
                                     {token.ath_change_percentage.toFixed(2)}%
                                 </span>
                             </div>
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-text-secondary">
                                 {new Date(token.ath_date).toLocaleDateString()}
                             </div>
                         </div>
@@ -234,8 +227,8 @@ export default function TokenDetailPage() {
                 </Card>
 
                 {/* Auto-refresh indicator */}
-                <div className="flex items-center justify-center gap-2 text-xs text-gray-500">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <div className="flex items-center justify-center gap-2 text-xs text-text-secondary">
+                    <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                     Auto-refreshing every 30 seconds
                 </div>
             </div>
