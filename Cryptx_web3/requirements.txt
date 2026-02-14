@@ -93,7 +93,10 @@ The project uses a monorepo structure managed by Turborepo/npm workspaces.
     ./start.sh setup
     ```
 
-    *Note: If you are on Windows, you may need to run `npm install` and `npm run dev` manually as described below, or use WSL.*
+    *Note: If you are on Windows, use the provided batch file:*
+    ```batch
+    start.bat setup
+    ```
 
 3.  **Manual Setup (Alternative):**
     If the script doesn't work for you:
